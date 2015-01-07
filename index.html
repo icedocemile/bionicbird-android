@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" href="css/index.css" />
+    <title>Bionic Bird</title>
+    <script>
+    // Redirect console.log to Evothings Workbench.
+    if (window.hyper && window.hyper.log) { console.log = hyper.log }
+    </script>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/JSON.prune/JSON.prune.js"></script>
+    <script src="cordova.js"></script>
+    <script src="js/uuid.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    app.initialize();
+    </script>
+  </head>
+  <body>
+  <div data-role="page" id="first" data-theme="a">
+    <div data-role="header">
+      <h1>Bionic Bird</h1>
+    </div>
+    <button id="scan" data-false="Start scan" data-true="Stop scan">Start scan</button>
+    <button id="reset">Reset BLE</button>
+
+    <div id="devices">
+      <h2>Devices</h2>
+      <!-- TODO: buttons to start/stop scan. -->
+      <ul data-role="listview" id="deviceList">
+        <!-- <li>Address RSSI Name</li> -->
+      </ul>
+    </div>
+
+    <div id="controls">
+      <h2>Controls</h2>
+      <button id="stop">Stop</button>
+      <form>
+        <!--
+        <label for="battery">Battery</label>
+        <input type="range" name="battery" id="battery" data-highlight=true min=0 max=100>
+        -->
+        <label for="thrust">Thrust</label>
+        <div class="full-width-slider">
+          <input type="range" min="0" max="255" value="0" id="thrust" name="thrust">
+        </div>
+        <label for="steering">Steering</label>
+        <div class="full-width-slider">
+          <input type="range" min="0" max="100" value="50" id="steering" name="steering">
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  </body>
+</html>
+

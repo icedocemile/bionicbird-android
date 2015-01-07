@@ -1,0 +1,16 @@
+button#scan, button#reset {
+  display: inline-block;
+  width: 10em;
+  height: 8em;
+}
+
+button#stop {
+}
+
+.full-width-slider .ui-slider input.ui-slider-input {
+  display: none;
+}
+
+#deviceList button {
+  height: 40px;
+}
