@@ -9,5 +9,5 @@ It uses Evothings, so you'll have to install that first:
 
 Then, you can use the hosted version in one of two ways:
 
-* [Click this on your Android browser](evothings://evo.fahhem.com/bionicbird)
+* [Follow the first link on my blog post on your Android](http://fahhem.com/blog/2015/01/bionic-bird-android-app/)
 * Enter this as the address in the Evothings client: http://evo.fahhem.com/bionicbird
