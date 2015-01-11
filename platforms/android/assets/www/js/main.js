@@ -26,7 +26,7 @@ app.onDeviceReady = function()
 {
 	// The plugin was loaded asynchronously and can here be referenced.
 	ble = evothings.ble;
-	navigator.accelerometer.watchAcceleration(onSuccess, onError, {frequency: 70});
+	navigator.accelerometer.watchAcceleration(onSuccess, onError, {frequency: 75});
   // For development only.
   // toggle_scan(true);
 };

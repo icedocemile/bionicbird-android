@@ -10,4 +10,11 @@
     <content src="index.html" />
     <access origin="*" />
 	<preference name="Orientation" value="portrait" />
+	 <platform name="android">
+		  <icon src="res/mipmap-mdpi/ic_launcher.png" density="mdpi" />
+		  <icon src="res/mipmap-hdpi/ic_launcher.png" density="hdpi" />
+		  <icon src="res/mipmap-xhdpi/ic_launcher.png" density="xhdpi" />
+		  <icon src="res/mipmap-xxhdpi/ic_launcher.png" density="xxhdpi" />
+		  <icon src="res/mipmap-xxxhdpi/ic_launcher.png" density="xxxhdpi" />
+	</platform>
 </widget>
