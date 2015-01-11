@@ -26,7 +26,7 @@ app.onDeviceReady = function()
 {
 	// The plugin was loaded asynchronously and can here be referenced.
 	ble = evothings.ble;
-	navigator.accelerometer.watchAcceleration(onSuccess, onError, {frequency: 200});
+	navigator.accelerometer.watchAcceleration(onSuccess, onError, {frequency: 75});
   // For development only.
   // toggle_scan(true);
 };
@@ -45,6 +45,9 @@ function onSuccess(acceleration) {
 		acceleration.x = -6;
 	} else if(acceleration.x > 6) {
 		acceleration.x = 6;
+		//Neutral tolerance on direction
+	} else if(acceleration.x < 1 && acceleration.x > -1) {
+		acceleration.x = 0;
 	}
 	if(acceleration.y <= -6) {
 		acceleration.y = -6;
@@ -59,7 +62,6 @@ function onSuccess(acceleration) {
 	//Range 10
 	//254 is max value
 	throttleValue = (acceleration.y + offset) * 254 / 10;
-	steeringValue = percentValueX;
 	
 	//console.log(throttleValue);
 	//console.log(steeringValue);

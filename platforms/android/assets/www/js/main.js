@@ -26,7 +26,7 @@ app.onDeviceReady = function()
 {
 	// The plugin was loaded asynchronously and can here be referenced.
 	ble = evothings.ble;
-	navigator.accelerometer.watchAcceleration(onSuccess, onError, {frequency: 200});
+	navigator.accelerometer.watchAcceleration(onSuccess, onError, {frequency: 70});
   // For development only.
   // toggle_scan(true);
 };
@@ -37,31 +37,35 @@ function resetValues() {
 }
 
 function onSuccess(acceleration) {
-    //Need to map this to steering values acceleration.x between 6 (left) and -6 (right)
+    //Mapping steering values acceleration.x between 6 (left) and -6 (right)
+	//Mapping throttle values acceleration.y between 4 (stop) and -4 (full throttle)
 	acceleration.x = -acceleration.x;
 	acceleration.y = -acceleration.y;
 	if(acceleration.x < -6) {
 		acceleration.x = -6;
 	} else if(acceleration.x > 6) {
 		acceleration.x = 6;
+		//Neutral tolerance on direction
+	} else if(acceleration.x < 1 && acceleration.x > -1) {
+		acceleration.x = 0;
 	}
 	if(acceleration.y <= -6) {
 		acceleration.y = -6;
 	} else if(acceleration.y >= 4) {
 		acceleration.y = 4;
 	}
-	//Range = 12. Offset = 6;
-	offset = 6;
-	var rangedValueX = acceleration.x + offset;
-	var percentValueX = rangedValueX * 99 / 12;
+	//Offset to work on a positive range only.
+	var offset = 6;
+	//Range 12
+	steeringValue = (acceleration.x + offset) * 99 / 12;
 	//Throttle
-	var percentValueY = (acceleration.y + 6) * 254 / 10;
-	throttleValue = percentValueY;
-	steeringValue = percentValueX;
+	//Range 10
+	//254 is max value
+	throttleValue = (acceleration.y + offset) * 254 / 10;
 	
 	//console.log(throttleValue);
 	//console.log(steeringValue);
-	//Update to bird
+	//Update to bird only if control button is on start flying.
 	if(started) {
 		update();
 	}
