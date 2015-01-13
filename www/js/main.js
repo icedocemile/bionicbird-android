@@ -3,6 +3,7 @@
 var app = {};
 var steeringValue = 50; //Init
 var throttleValue = 0;
+var currentAccYValue = -6;
 var started = false; //Is control started. Toggle button home.
 
 /** BLE plugin, is loaded asynchronously so the
@@ -26,47 +27,48 @@ app.onDeviceReady = function()
 {
 	// The plugin was loaded asynchronously and can here be referenced.
 	ble = evothings.ble;
-	navigator.accelerometer.watchAcceleration(onSuccess, onError, {frequency: 75});
+	navigator.accelerometer.watchAcceleration(onSuccess, onError, {frequency: 80});
   // For development only.
   // toggle_scan(true);
 };
 function resetValues() {
 	throttleValue = 0;
+	stoppedThrottleAccValue = currentAccYValue;
 	steeringValue = 50;
 	update();
 }
 
 function onSuccess(acceleration) {
-    //Mapping steering values acceleration.x between 6 (left) and -6 (right)
-	//Mapping throttle values acceleration.y between 4 (stop) and -4 (full throttle)
-	acceleration.x = -acceleration.x;
-	acceleration.y = -acceleration.y;
-	if(acceleration.x < -6) {
-		acceleration.x = -6;
-	} else if(acceleration.x > 6) {
-		acceleration.x = 6;
-		//Neutral tolerance on direction
-	} else if(acceleration.x < 1 && acceleration.x > -1) {
-		acceleration.x = 0;
-	}
-	if(acceleration.y <= -6) {
-		acceleration.y = -6;
-	} else if(acceleration.y >= 4) {
-		acceleration.y = 4;
-	}
-	//Offset to work on a positive range only.
-	var offset = 6;
-	//Range 12
-	steeringValue = (acceleration.x + offset) * 99 / 12;
-	//Throttle
-	//Range 10
-	//254 is max value
-	throttleValue = (acceleration.y + offset) * 254 / 10;
-	
-	//console.log(throttleValue);
-	//console.log(steeringValue);
-	//Update to bird only if control button is on start flying.
-	if(started) {
+	if(!started) {
+		currentAccYValue = -acceleration.y;
+	} else {
+		//Mapping steering values acceleration.x between 6 (left) and -6 (right)
+		//Mapping throttle values acceleration.y between stoppedThrottleAccValue (stop) and stoppedThrottleAccValue+10 (full throttle)
+		acceleration.x = -acceleration.x;
+		acceleration.y = -acceleration.y;
+		if(acceleration.x < -4.5) {
+			acceleration.x = -4.5;
+		} else if(acceleration.x > 4.5) {
+			acceleration.x = 4.5;
+			//Neutral tolerance on direction
+		} else if(acceleration.x < 1 && acceleration.x > -1) {
+			acceleration.x = 0;
+		}
+		if(acceleration.y <= stoppedThrottleAccValue) {
+			acceleration.y = stoppedThrottleAccValue;
+		} else if(acceleration.y >= stoppedThrottleAccValue+10) {
+			acceleration.y = stoppedThrottleAccValue+10;
+		}
+		//Offset to work on a positive range only.
+		var offset = 6;
+		//Range 12
+		steeringValue = (acceleration.x + 4.5) * 99 / 9;
+		//Throttle
+		//Range 10
+		//254 is max value
+		throttleValue = (acceleration.y - stoppedThrottleAccValue) * 254 / 10;
+		console.log(steeringValue);
+		//Update to bird only if control button is on start flying.
 		update();
 	}
 };
@@ -188,8 +190,6 @@ var toggle_scan = function(scanning) {
     console.log('scanning');
     clear_devices();
     ble.startScan(got_device, errorCB);
-    // console.log(JSON.prune(arguments.length));
-	  // app.startLeScan();
   } else {
     ble.stopScan();
   }
