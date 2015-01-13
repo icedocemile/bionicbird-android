@@ -3,7 +3,7 @@
 var app = {};
 var steeringValue = 50; //Init
 var throttleValue = 0;
-var currentAccYValue = -6;
+var currentAccYValue = 0;
 var started = false; //Is control started. Toggle button home.
 
 /** BLE plugin, is loaded asynchronously so the
@@ -42,8 +42,8 @@ function onSuccess(acceleration) {
 	if(!started) {
 		currentAccYValue = -acceleration.y;
 	} else {
-		//Mapping steering values acceleration.x between 6 (left) and -6 (right)
-		//Mapping throttle values acceleration.y between stoppedThrottleAccValue (stop) and stoppedThrottleAccValue+10 (full throttle)
+		//Mapping steering values acceleration.x
+		//Mapping throttle values acceleration.y between stoppedThrottleAccValue (stop) and stoppedThrottleAccValue+8 (full throttle)
 		acceleration.x = -acceleration.x;
 		acceleration.y = -acceleration.y;
 		if(acceleration.x < -4.5) {
@@ -56,18 +56,14 @@ function onSuccess(acceleration) {
 		}
 		if(acceleration.y <= stoppedThrottleAccValue) {
 			acceleration.y = stoppedThrottleAccValue;
-		} else if(acceleration.y >= stoppedThrottleAccValue+10) {
-			acceleration.y = stoppedThrottleAccValue+10;
+		} else if(acceleration.y >= stoppedThrottleAccValue+8) {
+			acceleration.y = stoppedThrottleAccValue+8;
 		}
 		//Offset to work on a positive range only.
-		var offset = 6;
-		//Range 12
 		steeringValue = (acceleration.x + 4.5) * 99 / 9;
 		//Throttle
-		//Range 10
 		//254 is max value
-		throttleValue = (acceleration.y - stoppedThrottleAccValue) * 254 / 10;
-		console.log(steeringValue);
+		throttleValue = (acceleration.y - stoppedThrottleAccValue) * 254 / 8;
 		//Update to bird only if control button is on start flying.
 		update();
 	}
